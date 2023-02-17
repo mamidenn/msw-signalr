@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { HubConnection } from "@microsoft/signalr";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  HubConnectionState,
+  LogLevel,
+} from "@microsoft/signalr";
+import { hubUrl } from "./hub.js";
 
 declare module "vitest" {
   export interface TestContext {
@@ -8,8 +14,12 @@ declare module "vitest" {
 }
 
 describe("signalR handler", () => {
-  it("does nothing", async () => {
-    const res = await window.fetch("http://localhost/hub/negotiate");
-    expect(true).toBe(true);
+  it("can negotiate a connection with the client", async (ctx) => {
+    ctx.connection = new HubConnectionBuilder()
+      .withUrl(hubUrl)
+      .configureLogging(LogLevel.Trace)
+      .build();
+    await ctx.connection.start();
+    expect(ctx.connection.state).toBe(HubConnectionState.Connected);
   });
 });
