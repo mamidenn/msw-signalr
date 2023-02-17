@@ -7,6 +7,9 @@
   "author": "Martin Dennhardt <martin@dennhardt.de>",
   "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": "<18"
+  },
   "devDependencies": {
     "@microsoft/signalr": "^7.0.2",
     "prettier": "^2.8.4",
