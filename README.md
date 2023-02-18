@@ -32,7 +32,7 @@ import { signalRHandlers } from "msw-signalr";
 import { handlers } from "./handlers";
 
 const hubUrl = "/hub";
-export const worker = setupWorker(...handlers, signalRHandlers(hubUrl));
+export const worker = setupWorker(...handlers, ...signalRHandlers(hubUrl));
 ```
 
 You can then broadcast messages to connected clients using the `send` method.
