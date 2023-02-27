@@ -17,6 +17,7 @@
     "vitest": "^0.28.4"
   },
   "dependencies": {
+    "@lukeed/uuid": "^2.0.0",
     "msw": "latest"
   },
   "peerDependencies": {
