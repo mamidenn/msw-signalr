@@ -1,4 +1,4 @@
-import { v4 as randomUUID } from "@lukeed/uuid";
+import { randomUUID } from "crypto";
 
 type ProtocolVersion = 0 | 1;
 
