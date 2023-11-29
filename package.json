@@ -2,29 +2,58 @@
   "name": "msw-signalr",
   "version": "1.0.2",
   "description": "Adds simple signalR hub mocking to msw",
-  "main": "dist/index.js",
   "repository": "https://github.com/mamidenn/msw-signalr.git",
   "author": "Martin Dennhardt <martin@dennhardt.de>",
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": "<18"
+    "node": ">=18"
   },
   "devDependencies": {
-    "@microsoft/signalr": "^7.0.2",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5",
-    "vitest": "^0.28.4"
+    "@changesets/cli": "^2.27.1",
+    "@microsoft/signalr": ">=5.0.0",
+    "jsdom": "^23.0.0",
+    "prettier": "^3.1.0",
+    "publint": "^0.2.5",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.2",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
-    "@lukeed/uuid": "^2.0.0",
-    "msw": "latest"
+    "msw": "^2.0.0"
   },
   "peerDependencies": {
-    "@microsoft/signalr": "^7.0.2"
+    "@microsoft/signalr": ">=5.0.0"
   },
   "scripts": {
-    "build": "tsc",
-    "test": "vitest"
+    "build": "vite build",
+    "prepack": "npm run build && tsc -p ./tsconfig.build.json && publint",
+    "test": "vitest",
+    "dev": "vite"
+  },
+  "files": [
+    "./dist"
+  ],
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/msw-signalr.js",
+    "require": "./dist/msw-signalr.umd.cjs"
+  },
+  "keywords": [
+    "signalr",
+    "api",
+    "mock",
+    "mocking",
+    "worker",
+    "prototype",
+    "server",
+    "service",
+    "handler",
+    "testing",
+    "front-end",
+    "back-end"
+  ],
+  "msw": {
+    "workerDirectory": "public"
   }
 }
