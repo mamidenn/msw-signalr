@@ -2,7 +2,10 @@
   "name": "msw-signalr",
   "version": "1.0.2",
   "description": "Adds simple signalR hub mocking to msw",
-  "repository": "https://github.com/mamidenn/msw-signalr.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mamidenn/msw-signalr.git"
+  },
   "author": "Martin Dennhardt <martin@dennhardt.de>",
   "license": "MIT",
   "type": "module",
