@@ -42,24 +42,35 @@ describe("signalR handler", () => {
   it("can send messages", async () => {
     const connection = builder.build();
 
-    const received = new Promise<any[]>((res) =>
-      connection.on("test", (...args) => res(args))
-    );
+    const received = new Promise<unknown[]>((res) => {
+      connection.on("test", (...args) => {
+        res(args);
+      });
+    });
     await connection.start();
-    hub.connections.forEach((c) => c.send("test", "hello", "world"));
+    hub.connections.forEach((c) => {
+      c.send("test", "hello", "world").catch(console.error);
+    });
     expect(await received).toStrictEqual(["hello", "world"]);
   });
 
   it("can send messages to multiple receivers", async () => {
     const connections = [builder.build(), builder.build()];
     const received = connections.map(
-      (c) => new Promise<any[]>((res) => c.on("test", (...args) => res(args)))
+      (c) =>
+        new Promise<unknown[]>((res) => {
+          c.on("test", (...args) => {
+            res(args);
+          });
+        })
     );
     for (const c of connections) {
       await c.start();
     }
 
-    hub.connections.forEach((c) => c.send("test", "hello", "world"));
+    hub.connections.forEach((c) => {
+      c.send("test", "hello", "world").catch(console.error);
+    });
     for (const r of received) {
       expect(await r).toStrictEqual(["hello", "world"]);
     }

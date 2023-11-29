@@ -43,7 +43,9 @@ export default function (
   return {
     connections,
     broadcast(target, ...args) {
-      connections.forEach((connection) => connection.send(target, ...args));
+      connections.forEach((connection) => {
+        connection.send(target, ...args).catch(console.error);
+      });
     },
     handlers: [
       http.post(`${hubUrl}/negotiate`, async ({ request }) => {
@@ -111,26 +113,54 @@ export default function (
         const connection = findConnection(request);
         if (!connection) return new HttpResponse(null, { status: NOT_FOUND });
 
-        const message = JSON.parse((await request.text()).replace(/\x1e$/, ""));
+        // eslint-disable-next-line no-control-regex
+        const payload = (await request.text()).replace(/\x1e$/, "");
+        let message: { protocol: string; version: number } | { type: number };
+        try {
+          const parsed = JSON.parse(payload) as unknown;
+          if (isNegotiation(parsed) || isMessage(parsed)) message = parsed;
+          else return new HttpResponse(null, { status: BAD_REQUEST });
+        } catch {
+          return new HttpResponse(null, { status: BAD_REQUEST });
+        }
         if (
-          message.protocol?.toUpperCase() === "JSON" &&
+          isNegotiation(message) &&
+          message.protocol.toUpperCase() === "JSON" &&
           [0, 1].includes(message.version)
         ) {
           return new HttpResponse();
         }
-        if (message.type === SEND) {
-          return new HttpResponse(null, { status: NOT_IMPLEMENTED });
-        }
-        if (message.type === PING) {
-          return new HttpResponse();
-        }
-        if (message.type === CLOSE) {
-          await connection.stream.writable.close();
-          connections.delete(connection.key);
-          return new HttpResponse();
+        if (isMessage(message)) {
+          if (message.type === SEND) {
+            return new HttpResponse(null, { status: NOT_IMPLEMENTED });
+          }
+          if (message.type === PING) {
+            return new HttpResponse();
+          }
+          if (message.type === CLOSE) {
+            await connection.stream.writable.close();
+            connections.delete(connection.key);
+            return new HttpResponse();
+          }
         }
         return new HttpResponse(null, { status: BAD_REQUEST });
       }),
     ],
   };
 }
+
+const isNegotiation = (
+  obj: unknown
+): obj is { protocol: string; version: number } =>
+  obj !== null &&
+  typeof obj === "object" &&
+  "protocol" in obj &&
+  typeof obj.protocol === "string" &&
+  "version" in obj &&
+  typeof obj.version === "number";
+
+const isMessage = (obj: unknown): obj is { type: number } =>
+  obj !== null &&
+  typeof obj === "object" &&
+  "type" in obj &&
+  typeof obj.type === "number";

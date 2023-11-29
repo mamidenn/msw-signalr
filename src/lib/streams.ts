@@ -18,7 +18,7 @@ export const keepAliveStream = (
     start(controller) {
       controller.enqueue({});
       interval = window.setInterval(
-        () => controller.enqueue({ type: PING }),
+        () => { controller.enqueue({ type: PING }); },
         keepAliveInterval
       );
     },
@@ -32,13 +32,6 @@ export const signalRencoderStream = () =>
   new TransformStream<Record<string, unknown>, string>({
     transform(chunk, controller) {
       controller.enqueue(JSON.stringify(chunk) + "\x1e");
-    },
-  });
-
-export const signalRdecoderStream = () =>
-  new TransformStream<string, Record<string, unknown>>({
-    transform(chunk, controller) {
-      controller.enqueue(JSON.parse(chunk.replace(/\x1e$/, "")));
     },
   });
 

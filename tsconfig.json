@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "module": "ES6",
     "moduleResolution": "Bundler",
     "declaration": true,
@@ -18,7 +19,8 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
+  "include": ["**/*.ts", "**/*.js", ".eslintrc.cjs"],
   "exclude": ["./dist"]
 }
