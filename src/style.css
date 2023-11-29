@@ -1,0 +1,17 @@
+* {
+    font-family: system-ui, sans-serif;
+}
+
+#state {
+    font-weight: bold;
+}
+#state[data-state="Connected"] {
+    color: green;
+}
+#state[data-state="Connecting"],
+#state[data-state="Reconnecting"] {
+    color: orange;
+}
+#state[data-state="Disconnected"] {
+    color: red;
+}

@@ -18,35 +18,32 @@ own REST call handlers](https://mswjs.io/docs/getting-started/integrate).
 ```typescript
 // src/mocks/server.js
 import { setupServer } from "msw/node";
-import { signalRHandlers } from "msw-signalr";
-import { handlers } from "./handlers";
+import { signalRHub } from "msw-signalr";
 
-const hubUrl = "/hub";
-export const server = setupServer(...handlers, ...signalRhandlers(hubUrl));
+export const hub = signalRHub("/hub");
+export const server = setupServer(...hub.handlers);
 
 //----------------
 
 // src/mocks/browser.js
-import { setupWorker } from "msw";
-import { signalRHandlers } from "msw-signalr";
-import { handlers } from "./handlers";
+import { setupWorker } from "msw/browser";
+import { signalRHub } from "msw-signalr";
 
-const hubUrl = "/hub";
-export const worker = setupWorker(...handlers, ...signalRHandlers(hubUrl));
+export const hub = signalRHub("/hub");
+export const worker = setupWorker(...hub.handlers);
 ```
 
 You can then broadcast messages to connected clients using the `send` method.
 
 ```typescript
-import { send } from "msw-signalr";
+import { hub } from "./mocks/browser";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 
 // set up the client
-const hubUrl = "/hub";
-const connection = new HubConnectionBuilder().withUrl(hubUrl).build();
+const connection = new HubConnectionBuilder().withUrl("/hub").build();
 connection.on("test-method", (message, id) => console.log({message, id})
 await connection.start();
 
 // send a message
-send("test-method", "Hello, world!", 69); // logs {message: "Hello, world!", id: 69}
+hub.broadcast("test-method", "Hello, world!", 69); // logs {message: "Hello, world!", id: 69}
 ```
