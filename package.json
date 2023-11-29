@@ -30,7 +30,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "prepack": "npm run build && tsc -p ./tsconfig.build.json && publint",
+    "prerelease": "npm run build && tsc -p ./tsconfig.build.json && publint",
+    "release": "changeset publish",
     "test": "vitest",
     "dev": "vite"
   },
