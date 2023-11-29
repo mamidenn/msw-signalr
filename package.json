@@ -1,6 +1,6 @@
 {
   "name": "msw-signalr",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Adds simple signalR hub mocking to msw",
   "repository": {
     "type": "git",
