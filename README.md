@@ -47,3 +47,10 @@ await connection.start();
 // send a message
 hub.broadcast("test-method", "Hello, world!", 69); // logs {message: "Hello, world!", id: 69}
 ```
+
+The hub can be further customized with the second argument to `signalRHub`, e.g. by passing a `delay` function to simulate network delay:
+
+```js
+import { delay } from "msw";
+const hub = signalRHub("/hub", { delay });
+```
